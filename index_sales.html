@@ -1,0 +1,512 @@
+<!--
+  ============================================================
+  AI営業アシスタント ランディングページ（埋め込み用）
+  ============================================================
+  既存サイトへの埋め込み手順:
+  1. このHTMLを既存ページの任意の位置に貼り付け
+  2. <style> ブロックを既存CSSに統合、またはそのまま <head> 内に配置
+  3. スマホ画面画像を差し替え:
+     .lp-phone-img の src / alt を実際の画像パスに変更
+  4. 連絡先・リンクを必要に応じて修正
+  ============================================================
+-->
+
+<!-- ─── Scoped Styles ─── -->
+<style>
+  /* ── 名前空間: .lp- で既存CSSとの衝突を回避 ── */
+  .lp-wrap {
+    --lp-navy: #1a2744;
+    --lp-navy-deep: #0f1a30;
+    --lp-teal: #2a9d8f;
+    --lp-teal-light: #3dbdad;
+    --lp-teal-glow: rgba(42, 157, 143, 0.15);
+    --lp-white: #ffffff;
+    --lp-gray-50: #f7f8fa;
+    --lp-gray-100: #eef0f4;
+    --lp-gray-200: #d8dce5;
+    --lp-gray-600: #6b7280;
+    --lp-gray-800: #2d3748;
+    --lp-orange: #f4845f;
+    --lp-radius: 16px;
+    font-family: 'Noto Sans JP', 'Hiragino Kaku Gothic ProN', 'Yu Gothic', sans-serif;
+    color: var(--lp-gray-800);
+    line-height: 1.8;
+    -webkit-font-smoothing: antialiased;
+  }
+  .lp-wrap *, .lp-wrap *::before, .lp-wrap *::after {
+    box-sizing: border-box; margin: 0; padding: 0;
+  }
+  .lp-container { max-width: 1120px; margin: 0 auto; padding: 0 24px; }
+
+  /* ── Animations ── */
+  @keyframes lp-fadeUp {
+    from { opacity: 0; transform: translateY(36px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes lp-float {
+    0%,100% { transform: translateY(0); }
+    50%     { transform: translateY(-10px); }
+  }
+  @keyframes lp-pulse {
+    0%,100% { box-shadow: 0 0 0 0 rgba(42,157,143,0.4); }
+    50%     { box-shadow: 0 0 0 16px rgba(42,157,143,0); }
+  }
+  .lp-reveal {
+    opacity: 0; transform: translateY(36px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+  }
+  .lp-reveal.lp-visible { opacity: 1; transform: translateY(0); }
+
+  /* ════════════════════════════════════════
+     HERO
+  ════════════════════════════════════════ */
+  .lp-hero {
+    position: relative;
+    background: linear-gradient(155deg, var(--lp-navy-deep) 0%, var(--lp-navy) 55%, #1e3a5f 100%);
+    overflow: hidden;
+    padding: 80px 0;
+  }
+  .lp-hero::before {
+    content: '';
+    position: absolute; inset: 0;
+    background:
+      radial-gradient(ellipse 600px 400px at 75% 30%, rgba(42,157,143,0.18), transparent),
+      radial-gradient(ellipse 400px 500px at 20% 80%, rgba(42,157,143,0.1), transparent);
+    pointer-events: none;
+  }
+  .lp-hero-grid {
+    position: absolute; inset: 0;
+    background-image:
+      linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+    background-size: 60px 60px;
+  }
+  .lp-hero-inner {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center;
+    position: relative; z-index: 2;
+  }
+  .lp-hero-text { animation: lp-fadeUp 0.9s ease both; }
+  .lp-hero-badge {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: rgba(42,157,143,0.15); border: 1px solid rgba(42,157,143,0.3);
+    border-radius: 100px; padding: 6px 18px; margin-bottom: 28px;
+    color: var(--lp-teal-light); font-size: 0.85rem; font-weight: 700;
+  }
+  .lp-hero-badge .lp-dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: var(--lp-teal-light); animation: lp-pulse 2s infinite;
+  }
+  .lp-hero h1 {
+    font-size: clamp(2rem, 4.2vw, 3.2rem);
+    font-weight: 900; line-height: 1.35; color: var(--lp-white);
+    margin-bottom: 24px;
+  }
+  .lp-hero h1 em {
+    font-style: normal;
+    background: linear-gradient(135deg, var(--lp-teal-light), #6ee7b7);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  }
+  .lp-hero-sub {
+    font-size: 1.02rem; line-height: 1.85; color: rgba(255,255,255,0.7);
+    margin-bottom: 36px; max-width: 520px;
+  }
+  .lp-hero-buttons { display: flex; gap: 16px; flex-wrap: wrap; }
+
+  /* Buttons (shared) */
+  .lp-btn-primary {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: var(--lp-teal); color: var(--lp-white);
+    padding: 16px 36px; border-radius: 100px; border: none;
+    font-size: 1rem; font-weight: 700; cursor: pointer; text-decoration: none;
+    transition: background 0.2s, transform 0.2s, box-shadow 0.2s;
+  }
+  .lp-btn-primary:hover {
+    background: var(--lp-teal-light); transform: translateY(-2px);
+    box-shadow: 0 8px 32px rgba(42,157,143,0.35);
+  }
+  .lp-btn-secondary {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: transparent; color: var(--lp-white);
+    padding: 16px 36px; border-radius: 100px;
+    border: 1px solid rgba(255,255,255,0.25);
+    font-size: 1rem; font-weight: 500; cursor: pointer; text-decoration: none;
+    transition: border-color 0.2s, background 0.2s;
+  }
+  .lp-btn-secondary:hover {
+    border-color: rgba(255,255,255,0.5); background: rgba(255,255,255,0.05);
+  }
+
+  /* Phone mockup — 画像差し替え可能 */
+  .lp-hero-visual {
+    display: flex; justify-content: center; align-items: center;
+    animation: lp-fadeUp 0.9s ease 0.3s both;
+  }
+  .lp-phone-shell {
+    width: 300px;
+    background: var(--lp-white);
+    border-radius: 32px;
+    padding: 14px;
+    box-shadow: 0 40px 80px rgba(0,0,0,0.4), 0 0 0 1px rgba(255,255,255,0.1);
+    animation: lp-float 6s ease-in-out infinite;
+  }
+  .lp-phone-notch {
+    width: 120px; height: 26px; margin: 0 auto 10px;
+    background: var(--lp-navy); border-radius: 100px;
+  }
+  .lp-phone-screen {
+    border-radius: 20px; overflow: hidden;
+    background: #f5f7fa;
+  }
+  /* ★ 差し替えポイント: この <img> の src を実画像に変更 */
+  .lp-phone-img {
+    width: 100%; height: auto; display: block;
+  }
+
+  /* ════════════════════════════════════════
+     PAIN POINTS
+  ════════════════════════════════════════ */
+  .lp-pain { padding: 90px 0; background: var(--lp-gray-50); }
+  .lp-label {
+    display: inline-block; font-size: 0.78rem; font-weight: 700;
+    color: var(--lp-teal); text-transform: uppercase; letter-spacing: 0.1em;
+    margin-bottom: 12px;
+  }
+  .lp-title {
+    font-size: clamp(1.5rem, 2.8vw, 2.1rem);
+    font-weight: 900; line-height: 1.45; color: var(--lp-navy);
+    margin-bottom: 52px;
+  }
+  .lp-title em { font-style: normal; color: var(--lp-teal); }
+  .lp-pain-grid {
+    display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px;
+  }
+  .lp-pain-card {
+    background: var(--lp-white); border: 1px solid var(--lp-gray-100);
+    border-radius: var(--lp-radius); padding: 34px 30px;
+    position: relative; overflow: hidden;
+    transition: transform 0.3s, box-shadow 0.3s, border-color 0.3s;
+  }
+  .lp-pain-card::before {
+    content: ''; position: absolute; top: 0; left: 0;
+    width: 4px; height: 100%; background: var(--lp-orange);
+    opacity: 0; transition: opacity 0.3s;
+  }
+  .lp-pain-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 40px rgba(0,0,0,0.06);
+    border-color: var(--lp-gray-200);
+  }
+  .lp-pain-card:hover::before { opacity: 1; }
+  .lp-pain-icon {
+    width: 46px; height: 46px; border-radius: 12px;
+    background: #fff3ed;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.3rem; margin-bottom: 14px;
+  }
+  .lp-pain-card h3 {
+    font-size: 1.02rem; font-weight: 700; color: var(--lp-navy);
+    margin-bottom: 8px; line-height: 1.5;
+  }
+  .lp-pain-card p {
+    font-size: 0.88rem; color: var(--lp-gray-600); line-height: 1.75;
+  }
+
+  /* ════════════════════════════════════════
+     FEATURES
+  ════════════════════════════════════════ */
+  .lp-features { padding: 90px 0; background: var(--lp-white); }
+  .lp-feat {
+    margin-bottom: 56px;
+  }
+  .lp-feat:last-child { margin-bottom: 0; }
+  .lp-feat-num {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 34px; height: 34px; border-radius: 9px;
+    background: var(--lp-teal-glow); color: var(--lp-teal);
+    font-weight: 900; font-size: 0.85rem; margin-bottom: 14px;
+  }
+  .lp-feat-text h3 {
+    font-size: 1.4rem; font-weight: 900; color: var(--lp-navy);
+    margin-bottom: 14px; line-height: 1.45;
+  }
+  .lp-feat-text p {
+    font-size: 0.93rem; color: var(--lp-gray-600); line-height: 1.85;
+  }
+
+  /* ════════════════════════════════════════
+     TRIAL BANNER
+  ════════════════════════════════════════ */
+  .lp-trial {
+    padding: 72px 0;
+    background: linear-gradient(155deg, var(--lp-navy-deep), var(--lp-navy));
+    position: relative; overflow: hidden; text-align: center;
+  }
+  .lp-trial::before {
+    content: ''; position: absolute; inset: 0;
+    background: radial-gradient(ellipse 500px 300px at 80% 50%, rgba(42,157,143,0.2), transparent);
+  }
+  .lp-trial > .lp-container { position: relative; z-index: 2; }
+  .lp-trial-badge {
+    display: inline-block;
+    background: var(--lp-orange); color: var(--lp-white);
+    padding: 8px 24px; border-radius: 100px;
+    font-weight: 900; font-size: 1rem; margin-bottom: 26px;
+    animation: lp-pulse 2.5s infinite;
+  }
+  .lp-trial h2 {
+    font-size: clamp(1.7rem, 3.2vw, 2.4rem);
+    font-weight: 900; color: var(--lp-white);
+    margin-bottom: 18px; line-height: 1.4;
+  }
+  .lp-trial p {
+    font-size: 1rem; color: rgba(255,255,255,0.65);
+    margin-bottom: 32px; max-width: 540px; margin-left: auto; margin-right: auto;
+  }
+
+  /* ════════════════════════════════════════
+     HOW IT WORKS
+  ════════════════════════════════════════ */
+  .lp-how { padding: 90px 0; background: var(--lp-gray-50); }
+  .lp-how .lp-label, .lp-how .lp-title { text-align: center; }
+  .lp-steps {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 28px; margin-top: 16px;
+  }
+  .lp-step {
+    text-align: center; padding: 38px 26px;
+    background: var(--lp-white); border-radius: var(--lp-radius);
+    border: 1px solid var(--lp-gray-100);
+    transition: transform 0.3s, box-shadow 0.3s;
+  }
+  .lp-step:hover {
+    transform: translateY(-5px); box-shadow: 0 14px 44px rgba(0,0,0,0.06);
+  }
+  .lp-step-num {
+    width: 52px; height: 52px; border-radius: 50%;
+    background: linear-gradient(135deg, var(--lp-teal), var(--lp-teal-light));
+    color: var(--lp-white); font-weight: 900; font-size: 1.2rem;
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 18px;
+  }
+  .lp-step h3 {
+    font-size: 1.05rem; font-weight: 700; color: var(--lp-navy); margin-bottom: 10px;
+  }
+  .lp-step p { font-size: 0.88rem; color: var(--lp-gray-600); line-height: 1.75; }
+
+  /* ════════════════════════════════════════
+     CTA
+  ════════════════════════════════════════ */
+  .lp-cta { padding: 90px 0; background: var(--lp-white); text-align: center; }
+  .lp-cta h2 {
+    font-size: clamp(1.5rem, 2.8vw, 2.1rem);
+    font-weight: 900; color: var(--lp-navy);
+    margin-bottom: 18px; line-height: 1.45;
+  }
+  .lp-cta > .lp-container > p {
+    font-size: 0.95rem; color: var(--lp-gray-600); line-height: 1.8;
+    max-width: 520px; margin: 0 auto 32px;
+  }
+  .lp-contacts {
+    display: flex; justify-content: center; gap: 36px;
+    margin-top: 36px; flex-wrap: wrap;
+  }
+  .lp-contact {
+    font-size: 0.88rem; color: var(--lp-gray-600);
+    display: flex; align-items: center; gap: 6px;
+  }
+  .lp-contact strong { color: var(--lp-navy); }
+  .lp-contact a { color: var(--lp-teal); text-decoration: none; }
+
+  /* ════════════════════════════════════════
+     RESPONSIVE
+  ════════════════════════════════════════ */
+  @media (max-width: 900px) {
+    .lp-hero-inner { grid-template-columns: 1fr; text-align: center; }
+    .lp-hero-sub { margin-left: auto; margin-right: auto; }
+    .lp-hero-buttons { justify-content: center; }
+    .lp-hero-visual { margin-top: 36px; }
+    .lp-phone-shell { width: 260px; }
+    .lp-pain-grid { grid-template-columns: 1fr; }
+    .lp-steps { grid-template-columns: 1fr; max-width: 400px; margin: 16px auto 0; }
+  }
+</style>
+
+<!-- ═══════════════════════════════════════════
+     CONTENT START
+═══════════════════════════════════════════ -->
+<div class="lp-wrap">
+
+  <!-- ─── Hero ─── -->
+  <section class="lp-hero">
+    <div class="lp-hero-grid"></div>
+    <div class="lp-container">
+      <div class="lp-hero-inner">
+        <div class="lp-hero-text">
+          <div class="lp-hero-badge"><span class="lp-dot"></span>まずは3ヶ月 無料トライアル</div>
+          <h1>商談中の「いま知りたい」に、<br><em>その場で即</em>応える。</h1>
+          <p class="lp-hero-sub">
+            多種多様な自社製品、複雑な仕様、頻繁な価格改定——<br>
+            ベテランしか答えられない商品知識をAIが学習。<br>
+            新人営業でも、お客様を待たせない「即答力」を。
+          </p>
+          <div class="lp-hero-buttons">
+            <a href="#lp-cta" class="lp-btn-primary">無料トライアルを始める →</a>
+            <a href="#lp-features" class="lp-btn-secondary">詳しく見る</a>
+          </div>
+        </div>
+
+        <div class="lp-hero-visual">
+          <div class="lp-phone-shell">
+            <div class="lp-phone-notch"></div>
+            <div class="lp-phone-screen">
+              <!--
+                ★ 画像差し替えポイント ★
+                src  → 実際のスクリーンショット画像パスに変更
+                alt  → 適切な代替テキストに変更
+                推奨サイズ: 幅 544px 以上（Retinaで272px表示）
+              -->
+              <img
+                class="lp-phone-img"
+                src="img/phone-shot.webp"
+                alt="AI営業アシスタントの画面イメージ"
+                width="544"
+                height="960"
+                loading="lazy"
+              >
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── Pain Points ─── -->
+  <section class="lp-pain" id="lp-pain">
+    <div class="lp-container">
+      <span class="lp-label">Problem</span>
+      <h2 class="lp-title">製造業の営業現場で、<br><em>こんなお悩み</em>ありませんか？</h2>
+      <div class="lp-pain-grid">
+        <div class="lp-pain-card lp-reveal">
+          <div class="lp-pain-icon">🤔</div>
+          <h3>「持ち帰って確認します」が口癖に</h3>
+          <p>商談中に詳しいスペックを聞かれても、即座に答えられず持ち帰り対応。お客様の熱量が冷めてしまいます。</p>
+        </div>
+        <div class="lp-pain-card lp-reveal">
+          <div class="lp-pain-icon">📚</div>
+          <h3>膨大な資料から最適解が見つからない</h3>
+          <p>カタログ、仕様書、過去資料…。最適な提案を探すだけで大量の時間を消費しています。</p>
+        </div>
+        <div class="lp-pain-card lp-reveal">
+          <div class="lp-pain-icon">💰</div>
+          <h3>納期・価格がパッと出てこない</h3>
+          <p>最新の標準納期やリストプライスの確認に手間取り、商談や見積もりのスピードが落ちています。</p>
+        </div>
+        <div class="lp-pain-card lp-reveal">
+          <div class="lp-pain-icon">👥</div>
+          <h3>新人教育に時間が割けない</h3>
+          <p>OJTに十分な時間を確保できず、知識の定着にばらつきが発生。戦力化までの時間が長期化しがちです。</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── Features ─── -->
+  <section class="lp-features" id="lp-features">
+    <div class="lp-container">
+      <span class="lp-label">Solution</span>
+      <h2 class="lp-title">あなたの会社専用のAIが<br><em>「その場で即」解決</em>します</h2>
+
+      <div class="lp-feat lp-reveal">
+        <div class="lp-feat-text">
+          <div class="lp-feat-num">01</div>
+          <h3>「図・表・写真」で<br>説得力のある回答</h3>
+          <p>テキストの説明だけでなく、関連する構成図、仕様表、製品写真を同時に提示。お客様に図や表を見せることで、視覚的に納得いただけます。</p>
+        </div>
+      </div>
+
+      <div class="lp-feat lp-reverse lp-reveal">
+        <div class="lp-feat-text">
+          <div class="lp-feat-num">02</div>
+          <h3>ニーズに合わせた<br>「提案」もお手のもの</h3>
+          <p>「食品工場向けでIPX7規格の防水対策品を探して」といった曖昧な質問にも、学習データから該当製品をピックアップし、根拠となるドキュメント名・ページ番号と共に提案します。</p>
+        </div>
+      </div>
+
+      <div class="lp-feat lp-reveal">
+        <div class="lp-feat-text">
+          <div class="lp-feat-num">03</div>
+          <h3>標準納期・参考価格も<br>即座に回答</h3>
+          <p>リストプライスや標準納期など、最新の情報を瞬時に回答。商談や見積もり作成のスピードが劇的に向上します。</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── Trial Banner ─── -->
+  <section class="lp-trial">
+    <div class="lp-container">
+      <div class="lp-trial-badge">リスクゼロ</div>
+      <h2>まずは3ヶ月、無料でお試し</h2>
+      <p>自社商品の知識（営業マニュアル、製品仕様書、標準価格表、ユーザー事例など）を学習したAIが24時間365日、営業活動をサポートします。</p>
+      <a href="#lp-cta" class="lp-btn-primary">無料トライアルに申し込む →</a>
+    </div>
+  </section>
+
+  <!-- ─── How It Works ─── -->
+  <section class="lp-how" id="lp-how">
+    <div class="lp-container">
+      <span class="lp-label">How It Works</span>
+      <h2 class="lp-title">導入は<em>かんたん</em>3ステップ</h2>
+      <div class="lp-steps">
+        <div class="lp-step lp-reveal">
+          <div class="lp-step-num">1</div>
+          <h3>資料をご提供</h3>
+          <p>カタログ・仕様書・価格表・事例集など、営業に必要な資料をお預けいただきます。</p>
+        </div>
+        <div class="lp-step lp-reveal">
+          <div class="lp-step-num">2</div>
+          <h3>AIが学習</h3>
+          <p>お預かりした資料をもとに、貴社専用のAIアシスタントを構築します。</p>
+        </div>
+        <div class="lp-step lp-reveal">
+          <div class="lp-step-num">3</div>
+          <h3>営業現場で活用</h3>
+          <p>スマートフォンやPCからいつでもアクセス。商談中もその場で即座に回答を得られます。</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── CTA ─── -->
+  <section class="lp-cta" id="lp-cta">
+    <div class="lp-container">
+      <span class="lp-label">Contact</span>
+      <h2>AIを、あなたの会社の<br>営業戦力に。</h2>
+      <p>まずはお気軽にお問い合わせください。貴社の営業課題に合わせた最適なプランをご提案いたします。</p>
+      <a href="mailto:contact@dgtlvrg.com" class="lp-btn-primary">お問い合わせはこちら →</a>
+      <div class="lp-contacts">
+        <span class="lp-contact">📞 <strong>050-6879-6345</strong></span>
+        <span class="lp-contact">✉️ <strong>contact@dgtlvrg.com</strong></span>
+        <span class="lp-contact">🌐 <strong><a href="https://www.dgtlvrg.com">www.dgtlvrg.com</a></strong></span>
+      </div>
+    </div>
+  </section>
+
+</div>
+<!-- ═══════════════════════════════════════════
+     CONTENT END
+═══════════════════════════════════════════ -->
+
+<!-- ─── Scroll Reveal Script ─── -->
+<script>
+(function() {
+  var obs = new IntersectionObserver(function(entries) {
+    entries.forEach(function(e, i) {
+      if (e.isIntersecting) {
+        setTimeout(function() { e.target.classList.add('lp-visible'); }, i * 80);
+        obs.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.12 });
+  document.querySelectorAll('.lp-reveal').forEach(function(el) { obs.observe(el); });
+})();
+</script>
